@@ -130,10 +130,9 @@ public class ExcelSheet {
     /**
      * 设置excel 循环list
      *
-     * @param list
-     * @param rowStart
-     * @param cellStart
-     * @param <E>
+     * @param list  list数据
+     * @param rowStart row开始行
+     * @param cellStart cell 开始行
      * @return
      */
     public <E> CellData setDateList(List<E> list, Integer rowStart, Integer cellStart) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -168,6 +167,11 @@ public class ExcelSheet {
         return new CellData(rowList);
     }
 
+    /**
+     * 对注解字段，按照sort排序
+     * @param fields
+     * @return
+     */
     public List<Field> sortFields(Field[] fields) {
         //对参与excel导出的序列，进行排序
         List<Field> rsFields = Arrays.asList(fields).stream().filter(v -> {
@@ -225,6 +229,11 @@ public class ExcelSheet {
         }
     }
 
+    /**
+     * 反射获取类中的全部属性，包括父类中的属性。
+     * @param clazz
+     * @return
+     */
     public static Field[] getAllFields(Class<?> clazz) {
         Field[] fileds = new Field[0];
         fileds = (Field[]) ArrayUtils.addAll(clazz.getDeclaredFields(), new Field[0]);
@@ -236,6 +245,12 @@ public class ExcelSheet {
         return fileds;
     }
 
+    /**
+     * 根据反射类型设置 cell
+     * @param excelRow row对象
+     * @param fieldType 反射对象
+     * @param val 值
+     */
     private <E> void addCell(ExcelRow excelRow, Class<?> fieldType, Object val) {
         try {
             if (val == null) {
@@ -288,6 +303,13 @@ public class ExcelSheet {
         return new ImportExcel(rsList, rowNum, cellNum, keys);
     }
 
+    /**
+     * 获取header
+     * @param rowNum row 起始位置
+     * @param cellNum cell起始位置
+     * @param keys 自定义导出数据方式
+     * @return
+     */
     private List<String> getExcelHeader(int rowNum, int cellNum, String[] keys) {
         List<String> headers = new ArrayList<>();
         List<String> rsHeaderList = new ArrayList<>();
@@ -623,6 +645,10 @@ public class ExcelSheet {
         }
     }
 
+    /**
+     * map 转 entity方法
+     * @return
+     */
     public  <T> T mapToEntity(Map<String, String> map,Class<?> clazz) throws IllegalAccessException, InstantiationException, ParseException {
         T entity = (T) clazz.newInstance();
         //对参与excel导出的序列，进行排序
