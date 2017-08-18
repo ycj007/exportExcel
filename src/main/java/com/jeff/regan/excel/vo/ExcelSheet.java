@@ -87,7 +87,7 @@ public class ExcelSheet {
         Field[] fields = getAllFields(clazz); //获取所有属性
         List<Field> rsFields = sortFields(fields);
         int row = 0;
-        if (this.excelTitle != null && this.excelTitle.title != null && this.excelTitle.title != "") {
+        if (this.excelTitle != null && this.excelTitle.title != null) {
             row = 1;
         }
         //设置头文件
@@ -141,7 +141,7 @@ public class ExcelSheet {
 
     public <E> CellData setDateList(List<E> list, Integer rowStart, Integer rowEnd, Integer cellStart, Integer cellEnd) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         List<ExcelRow> rowList = new ArrayList<>();
-        if (list.size() < 1) new CellData(rowList);
+        if (list.size() < 1) return new CellData(rowList);
         Class<?> clazz = list.get(0).getClass();
         Field[] fields = getAllFields(clazz); //获取所有属性
         //对参与excel导出的序列，进行排序
@@ -219,7 +219,7 @@ public class ExcelSheet {
         /**
          * 合并标题
          */
-        if (this.excelTitle != null && this.excelTitle.title != null && this.excelTitle.title != "") {
+        if (this.excelTitle != null && this.excelTitle.title != null) {
             this.sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, columnNum - 1));
             ExcelRow excelRow = this.row(0).cell(0).cellValue(this.excelTitle.title);
             excelRow.getRow().setHeightInPoints(30.0F);
@@ -273,7 +273,9 @@ public class ExcelSheet {
                 excelRow.cellValue((String) Class.forName(this.getClass().getName().replaceAll(this.getClass().getSimpleName(), "fieldtype." + val.getClass().getSimpleName() + "Type")).getMethod("setValue", Object.class).invoke((Object) null, val));
             }
         } catch (Exception var9) {
-            excelRow.cellValue(val.toString());
+            if(val != null){
+                excelRow.cellValue(val.toString());
+            }
         }
     }
 

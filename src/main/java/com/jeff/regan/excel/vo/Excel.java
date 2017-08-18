@@ -113,7 +113,13 @@ public class Excel {
      */
     public void saveExcel(String file) throws IOException {
         OutputStream out = new FileOutputStream(new File(file));
-        this.workbook.write(out);
+       try {
+           this.workbook.write(out);
+       }catch (IOException e){
+           throw new IOException();
+       }finally {
+           out.close();
+       }
     }
 
     /**
