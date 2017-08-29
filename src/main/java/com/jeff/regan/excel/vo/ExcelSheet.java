@@ -1,7 +1,6 @@
 package com.jeff.regan.excel.vo;
 
 import com.jeff.regan.excel.annotation.ExcelField;
-import com.jeff.regan.excel.util.DateUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -61,7 +60,7 @@ public class ExcelSheet {
         return row(rownum);
     }
 
-    public Sheet getHssfSheet() {
+    public Sheet getSheet() {
         return sheet;
     }
 
@@ -112,6 +111,23 @@ public class ExcelSheet {
      */
     public ExcelHeader header(Class<?> clazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         return header(clazz, null);
+    }
+
+    /**
+     * 设置hear
+     * @param hear hear字符串，逗号间隔
+     * @param startRow row开始位置
+     * @param startCell cell开始位置
+     * @return
+     */
+    public CellData header(String hear,int startRow,int startCell){
+        List<ExcelRow> rowList = new ArrayList<>();
+        String[] hears = hear.split(",");
+        for (int i=startCell; i<hears.length+startCell; i++) {
+            ExcelRow excelRow = this.row(startRow).cell(i).cellValue(hears[i]);
+            rowList.add(excelRow);
+        }
+        return new CellData(rowList);
     }
 
 
@@ -176,9 +192,9 @@ public class ExcelSheet {
         //设置excel 值
         int maxWeight = 0;
         for (Map map : list) {
-            if (maxWeight < map.size()) maxWeight = map.size();
+            if(maxWeight < map.size()) maxWeight = map.size();
             int cellNum = cellStart;
-            for (Object k : map.keySet()) {
+            for(Object k : map.keySet()){
                 //获取值
                 ExcelRow cell = this.row(rowStart).cell(cellNum);
                 rowList.add(cell);
@@ -449,7 +465,7 @@ public class ExcelSheet {
             return row;
         }
 
-        private Cell getCell() {
+        public Cell getCell() {
             return cell;
         }
 
@@ -699,7 +715,7 @@ public class ExcelSheet {
                 }else if(field.getType() == Float.class){
                     obj = Float.parseFloat(map.get(fName));
                 }else if(field.getType() == Date.class){
-                    obj = DateUtils.str2Date(map.get(fName));
+                    obj = new SimpleDateFormat("yyyy-MM-dd").parse(map.get(fName));
                 }
                 field.set(entity, obj);
             }

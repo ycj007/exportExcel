@@ -88,11 +88,9 @@ public class ExcelTest {
     public void Export4Annotation2Style() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException {
         Excel excel = new Excel();
         ExcelSheet sheet = excel.createSheet();
-        //获取excel样式
-        Map<String, CellStyle> styles = createStyles(excel.getWorkbook());
-        sheet.title("学生统计表").cellStyle(styles.get("title"));   //设置excel title名称
-        sheet.header(Student.class, styles.get("header"))                    //设置excel hear
-                .setData(init()).cellStyle(styles.get("data"));              //设置 data
+        sheet.title("学生统计表").cellStyle(ExcelStyle.getCommTitle(excel.getWorkbook()));   //设置excel title名称
+        sheet.header(Student.class, ExcelStyle.getCommHeader(excel.getWorkbook()))                    //设置excel hear
+                .setData(init()).cellStyle(ExcelStyle.getCommData(excel.getWorkbook()));              //设置 data
         excel.saveExcel("c://student_annotation.xlsx");
     }
 
@@ -166,6 +164,19 @@ public class ExcelTest {
     }
 
     /**
+     * 快速导出
+     * @throws Exception
+     */
+    @Test
+    public void fastExport() throws Exception{
+        Excel excel = new Excel();
+        ExcelSheet sheet = excel.createSheet();
+        sheet.header("姓名,年龄,学校,日期", 0, 0).cellStyle(ExcelStyle.getCommHeader(excel.getWorkbook()));
+        sheet.setDateList(init(), 1, 0).cellStyle(ExcelStyle.getCommData(excel.getWorkbook()));
+        excel.saveExcel("c://fast_export_excel.xlsx");
+    }
+
+    /**
      * 初始化数据
      *
      * @return
@@ -183,61 +194,4 @@ public class ExcelTest {
         return list;
     }
 
-    /**
-     * excel 样式
-     *
-     * @return
-     */
-    public Map<String, CellStyle> createStyles(Workbook workbook) {
-        Map<String, CellStyle> styles = new HashMap();
-        CellStyle style = workbook.createCellStyle();
-        style.setAlignment((short) 2);
-        style.setVerticalAlignment((short) 1);
-        Font titleFont = workbook.createFont();
-        titleFont.setFontName("Arial");
-        titleFont.setFontHeightInPoints((short) 16);
-        titleFont.setBoldweight((short) 700);
-        style.setFont(titleFont);
-        styles.put("title", style);
-        style = workbook.createCellStyle();
-        style.setVerticalAlignment((short) 1);
-        style.setBorderRight((short) 1);
-        style.setRightBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
-        style.setBorderLeft((short) 1);
-        style.setLeftBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
-        style.setBorderTop((short) 1);
-        style.setTopBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
-        style.setBorderBottom((short) 1);
-        style.setBottomBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
-        Font dataFont = workbook.createFont();
-        dataFont.setFontName("Arial");
-        dataFont.setFontHeightInPoints((short) 10);
-        style.setFont(dataFont);
-        styles.put("data", style);
-        style = workbook.createCellStyle();
-        style.cloneStyleFrom((CellStyle) styles.get("data"));
-        style.setAlignment((short) 1);
-        styles.put("data1", style);
-        style = workbook.createCellStyle();
-        style.cloneStyleFrom((CellStyle) styles.get("data"));
-        style.setAlignment((short) 2);
-        styles.put("data2", style);
-        style = workbook.createCellStyle();
-        style.cloneStyleFrom((CellStyle) styles.get("data"));
-        style.setAlignment((short) 3);
-        styles.put("data3", style);
-        style = workbook.createCellStyle();
-        style.cloneStyleFrom((CellStyle) styles.get("data"));
-        style.setAlignment((short) 2);
-        style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-        style.setFillPattern((short) 1);
-        Font headerFont = workbook.createFont();
-        headerFont.setFontName("Arial");
-        headerFont.setFontHeightInPoints((short) 10);
-        headerFont.setBoldweight((short) 700);
-        headerFont.setColor(IndexedColors.WHITE.getIndex());
-        style.setFont(headerFont);
-        styles.put("header", style);
-        return styles;
-    }
 }

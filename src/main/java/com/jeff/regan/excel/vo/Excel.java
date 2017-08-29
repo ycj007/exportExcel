@@ -37,7 +37,7 @@ public class Excel {
         try {
             POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(fi));
             this.workbook = new HSSFWorkbook(fs);
-        } catch (Exception e) {
+        }catch (Exception e){
             this.workbook = new XSSFWorkbook(new FileInputStream(fi));
         }
     }
@@ -73,7 +73,6 @@ public class Excel {
 
     /**
      * 获取工作簿 根据sheet name
-     *
      * @param sheetName
      * @return
      */
@@ -83,17 +82,14 @@ public class Excel {
 
     /**
      * 获取工作簿 根据
-     *
      * @param sheetIndex
      * @return
      */
     public ExcelSheet getSheet(int sheetIndex) {
         return new ExcelSheet(this.workbook.getSheetAt(sheetIndex));
     }
-
     /**
      * 获取工作簿 根据
-     *
      * @return
      */
     public ExcelSheet getSheet() {
@@ -112,13 +108,13 @@ public class Excel {
      */
     public void saveExcel(String file) throws IOException {
         OutputStream out = new FileOutputStream(new File(file));
-        try {
-            this.workbook.write(out);
-        } catch (IOException e) {
-            throw new IOException();
-        } finally {
-            out.close();
-        }
+       try {
+           this.workbook.write(out);
+       }catch (IOException e){
+           throw new IOException();
+       }finally {
+           out.close();
+       }
     }
 
     /**
@@ -133,10 +129,9 @@ public class Excel {
 
     /**
      * excel 导出
-     *
      * @throws IOException
      */
-    /*public void saveExcel(String fileName, HttpServletResponse response) throws IOException {
+    /*public void saveExcel(String fileName,HttpServletResponse response) throws IOException {
         ServletOutputStream fOut = null;
         try {
             response.setContentType("application/vnd.ms-excel;charSet=UTF-8");
@@ -151,7 +146,7 @@ public class Excel {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
+        }finally {
             try {
                 fOut.flush();
                 fOut.close();
@@ -159,6 +154,7 @@ public class Excel {
                 e.printStackTrace();
             }
         }
-
     }*/
+
+
 }

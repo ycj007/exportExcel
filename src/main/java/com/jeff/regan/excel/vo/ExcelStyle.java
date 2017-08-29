@@ -1,12 +1,12 @@
 package com.jeff.regan.excel.vo;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * excel 样式定制
@@ -36,7 +36,11 @@ public class ExcelStyle {
      */
     public static short BORDER_TOP = 4;
 
-    public ExcelStyle(CellStyle cellStyle, Font font) {
+    private ExcelStyle(Workbook workbook) {
+        this.cellStyle = workbook.createCellStyle();
+        this.font = workbook.createFont();
+    }
+    private ExcelStyle(CellStyle cellStyle, Font font) {
         this.cellStyle = cellStyle;
         this.font = font;
     }
@@ -48,9 +52,18 @@ public class ExcelStyle {
      * @return
      */
     public static ExcelStyle builder(Workbook workbook) {
-        ExcelStyle excelStyle = new ExcelStyle(workbook.createCellStyle(), workbook.createFont());
-        return excelStyle;
+        return new ExcelStyle(workbook);
     }
+
+    public static ExcelStyle builder(Excel excel) {
+        return new ExcelStyle(excel.getWorkbook());
+    }
+
+    public static ExcelStyle getCellStyle(Sheet sheet, int row, int cell) {
+        CellStyle cellStyle = sheet.getRow(row).getCell(cell).getCellStyle();
+        return new ExcelStyle(cellStyle, sheet.getWorkbook().createFont());
+    }
+
 
     /**
      * 返回CellStyle
@@ -61,6 +74,16 @@ public class ExcelStyle {
         CellStyle cellStyle = this.cellStyle;
         cellStyle.setFont(this.font);
         return cellStyle;
+    }
+
+    /**
+     * 设置表格加粗
+     *
+     * @return
+     */
+    public ExcelStyle cloneStyle(CellStyle csl) {
+        this.cellStyle.cloneStyleFrom(csl);
+        return this;
     }
 
     /**
@@ -223,5 +246,107 @@ public class ExcelStyle {
         this.cellStyle.setFillForegroundColor(color);// 设置背景色
         this.cellStyle.setFillPattern(fillPattern);
         return this;
+    }
+
+    /*******************************   默认样式  ***********************************/
+    /**
+     * title 默认样式
+     * @return
+     */
+    public static CellStyle getCommTitle(Workbook workbook) {
+        return createStyles(workbook).get("title");
+    }
+    /**
+     * header 默认样式
+     * @return
+     */
+    public static CellStyle getCommHeader(Workbook workbook) {
+        return createStyles(workbook).get("header");
+    }
+    /**
+     * data 默认样式
+     * @return
+     */
+    public static CellStyle getCommData(Workbook workbook) {
+        return createStyles(workbook).get("data");
+    }
+    /**
+     * data1 默认样式
+     * @return
+     */
+    public static CellStyle getCommData1(Workbook workbook) {
+        return createStyles(workbook).get("data1");
+    }
+    /**
+     * data2 默认样式
+     * @return
+     */
+    public static CellStyle getCommData2(Workbook workbook) {
+        return createStyles(workbook).get("data2");
+    }
+    /**
+     * data3 默认样式
+     * @return
+     */
+    public static CellStyle getCommData3(Workbook workbook) {
+        return createStyles(workbook).get("data3");
+    }
+
+    /**
+     * excel 样式
+     *
+     * @return
+     */
+    private static Map<String, CellStyle> createStyles(Workbook workbook) {
+        Map<String, CellStyle> styles = new HashMap();
+        CellStyle style = workbook.createCellStyle();
+        style.setAlignment((short) 2);
+        style.setVerticalAlignment((short) 1);
+        Font titleFont = workbook.createFont();
+        titleFont.setFontName("Arial");
+        titleFont.setFontHeightInPoints((short) 16);
+        titleFont.setBoldweight((short) 700);
+        style.setFont(titleFont);
+        styles.put("title", style);
+        style = workbook.createCellStyle();
+        style.setVerticalAlignment((short) 1);
+        style.setBorderRight((short) 1);
+        style.setRightBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+        style.setBorderLeft((short) 1);
+        style.setLeftBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+        style.setBorderTop((short) 1);
+        style.setTopBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+        style.setBorderBottom((short) 1);
+        style.setBottomBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+        Font dataFont = workbook.createFont();
+        dataFont.setFontName("Arial");
+        dataFont.setFontHeightInPoints((short) 10);
+        style.setFont(dataFont);
+        styles.put("data", style);
+        style = workbook.createCellStyle();
+        style.cloneStyleFrom((CellStyle) styles.get("data"));
+        style.setAlignment((short) 1);
+        styles.put("data1", style);
+        style = workbook.createCellStyle();
+        style.cloneStyleFrom((CellStyle) styles.get("data"));
+        style.setAlignment((short) 2);
+        styles.put("data2", style);
+        style = workbook.createCellStyle();
+        style.cloneStyleFrom((CellStyle) styles.get("data"));
+        style.setAlignment((short) 3);
+        styles.put("data3", style);
+        style = workbook.createCellStyle();
+        style.cloneStyleFrom((CellStyle) styles.get("data"));
+        style.setAlignment((short) 2);
+        style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
+        style.setFillPattern((short) 1);
+        Font headerFont = workbook.createFont();
+        headerFont.setFontName("Arial");
+        headerFont.setFontHeightInPoints((short) 10);
+        headerFont.setBoldweight((short) 700);
+        headerFont.setColor(IndexedColors.WHITE.getIndex());
+        style.setFont(headerFont);
+        styles.put("header", style);
+        return styles;
     }
 }

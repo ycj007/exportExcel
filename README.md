@@ -177,3 +177,12 @@ CellStyle cellStyle = ExcelStyle.builder(excel.getWorkbook())
                 .border(ExcelStyle.BORDER_TOP, ExcelStyle.BORDER_LEFT, ExcelStyle.BORDER_BOTTOM, ExcelStyle.BORDER_RIGHT) //设置表格边框
                 .build();
 ```
+
+9.excel 推荐快速导出
+``` java
+Excel excel = new Excel();
+ExcelSheet sheet = excel.createSheet();
+sheet.header("姓名,年龄,学校,日期", 0, 0).cellStyle(ExcelStyle.getCommHeader(excel.getWorkbook()));
+sheet.setDateList(init(), 1, 0).cellStyle(ExcelStyle.getCommData(excel.getWorkbook()));
+excel.saveExcel("c://fast_export_excel.xlsx");
+```
